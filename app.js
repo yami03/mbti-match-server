@@ -1,5 +1,8 @@
 const createError = require('http-errors');
 const express = require('express');
+const mongoose = require('mongoose');
+const passport = require('passport');
+const bodyParser = require('body-parser');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
@@ -11,6 +14,17 @@ const app = express();
 if (process.env.NODE_ENV === 'development') {
   require('dotenv').config();
 }
+
+mongoose.connect(process.env.DATABASE_URI, {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+  useFindAndModify: false,
+  useCreateIndex: true
+});
+
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', () => console.log('connection'));
 
 // view engine setup
 
