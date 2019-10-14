@@ -20,7 +20,7 @@ const userSchema = new Schema(
       type: String,
       required: true
     },
-    location: [
+    /*location: [
       {
         latitude: {
           type: Number,
@@ -45,10 +45,12 @@ const userSchema = new Schema(
       required: true
     },
     description: {
-      type: String
-    },
+      type: String,
+      default: ''
+    },*/
     mail_confirm: {
-      type: boolean
+      type: Boolean,
+      default: false
     },
     dislike_users: [
       {
