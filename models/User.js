@@ -13,41 +13,63 @@ const userSchema = new Schema(
       required: true
     },
     mbti: {
-      type: String,
-      required: true
+      type: {
+        id: Number,
+        type: String
+      },
+      level0: [
+        {
+          type: String
+        }
+      ],
+      level1: [
+        {
+          type: String
+        }
+      ],
+      level2: [
+        {
+          type: String
+        }
+      ],
+      level3: [
+        {
+          type: String
+        }
+      ],
+      level4: [
+        {
+          type: String
+        }
+      ]
     },
     name: {
       type: String,
       required: true
     },
-    /*location: [
+    location: [
       {
         latitude: {
-          type: Number,
-          required: true
+          type: Number
         },
         longitude: {
-          type: Number,
-          required: true
+          type: Number
         }
       }
     ],
     profile_image: {
-      type: String,
-      required: true
+      type: String
     },
     dob: {
-      type: Date,
-      required: true
+      type: Date
     },
     gender: {
-      type: String,
-      required: true
+      type: String
     },
     description: {
       type: String,
       default: ''
-    },*/
+    },
     mail_confirm: {
       type: Boolean,
       default: false
