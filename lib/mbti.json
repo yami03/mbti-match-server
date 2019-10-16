@@ -1,0 +1,146 @@
+[
+  {
+    "id": 1,
+    "type": "infp",
+    "level0": ["isfp", "esfp", "istp", "estp", "isfj", "esfj", "istj", "estj"],
+    "level1": [],
+    "level2": [],
+    "level3": ["infp", "enfp", "infj", "intj", "intp", "entp"],
+    "levle4": ["enfj", "entj"]
+  },
+  {
+    "id": 2,
+    "type": "enfp",
+    "level0": ["isfp", "esfp", "istp", "estp", "isfj", "esfj", "istj", "estj"],
+    "level1": [],
+    "level2": [],
+    "level3": ["infp", "enfp", "enfj", "entj", "intp", "entp"],
+    "level4": ["infj", "intj"]
+  },
+  {
+    "id": 3,
+    "type": "infj",
+    "level0": ["isfp", "esfp", "istp", "estp", "isfj", "esfj", "istj", "estj"],
+    "level1": [],
+    "level2": [],
+    "level3": ["infp", "infj", "enfj", "intj", "entj", "intp"],
+    "level4": ["enfp", "entp"]
+  },
+  {
+    "id": 4,
+    "type": "enfj",
+    "level0": ["esfp", "istp", "estp", "isfj", "esfj", "istj", "estj"],
+    "level1": [],
+    "level2": [],
+    "level3": ["enfp", "infj", "enfj", "intj", "entj", "intp", "entp"],
+    "level4": ["infp", "isfp"]
+  },
+  {
+    "id": 5,
+    "type": "intj",
+    "level0": [],
+    "level1": ["isfj", "esfj", "istj", "estj"],
+    "level2": ["isfp", "esfp", "istp", "estp"],
+    "level3": ["infp", "infj", "enfj", "intj", "entj", "intp"],
+    "level4": ["enfp", "entp"]
+  },
+  {
+    "id": 6,
+    "type": "entj",
+    "level0": [],
+    "level1": [],
+    "level2": ["isfp", "esfp", "istp", "estp", "isfj", "esfj", "istj", "estj"],
+    "level3": ["enfp", "infj", "enfj", "intj", "entj", "entp"],
+    "level4": ["infp", "intp"]
+  },
+  {
+    "id": 7,
+    "type": "intp",
+    "level0": [],
+    "level1": ["isfj", "esfj", "istj"],
+    "level2": ["isfp", "esfp", "istp", "estp"],
+    "level3": ["infp", "enfp", "infj", "enfj", "intj", "intp", "entp"],
+    "level4": ["entj", "estj"]
+  },
+  {
+    "id": 8,
+    "type": "entp",
+    "level0": [],
+    "level1": ["isfj", "esfj", "istj", "estj"],
+    "level2": ["isfp", "esfp", "istp", "estp"],
+    "level3": ["infp", "enfp", "enfj", "entj", "intp", "entp"],
+    "level4": ["infj", "intj"]
+  },
+  {
+    "id": 9,
+    "type": "isfp",
+    "level0": ["infp", "enfp", "infj"],
+    "level1": ["isfp", "esfp", "istp", "estp"],
+    "level2": ["intj", "entj", "intp", "entp", "isfj", "istj"],
+    "level3": [],
+    "level4": ["enfj", "esfj", "estj"]
+  },
+  {
+    "id": 10,
+    "type": "esfp",
+    "level0": ["infp", "enfp", "infj", "enfj"],
+    "level1": ["isfp", "esfp", "istp", "estp"],
+    "level2": ["intj", "entj", "intp", "entp", "esfj", "estj"],
+    "level3": [],
+    "level4": ["isfj", "istj"]
+  },
+  {
+    "id": 11,
+    "type": "istp",
+    "level0": ["infp", "enfp", "infj", "enfj"],
+    "level1": ["isfp", "esfp", "istp", "estp"],
+    "level2": ["intj", "entj", "intp", "entp", "isfj", "istj"],
+    "level3": [],
+    "level4": ["esfj", "estj"]
+  },
+  {
+    "id": 12,
+    "type": "estp",
+    "level0": ["infp", "enfp", "infj", "enfj"],
+    "level1": ["isfp", "esfp", "istp", "estp"],
+    "level2": ["intj", "entj", "intp", "entp", "esfj", "estj"],
+    "level3": [],
+    "level4": ["isfj", "istj"]
+  },
+  {
+    "id": 13,
+    "type": "isfj",
+    "level0": ["infp", "enfp", "infj", "enfj"],
+    "level1": ["intj", "intp", "entp"],
+    "level2": ["entj", "isfp", "istp"],
+    "level3": ["isfj", "esfj", "istj", "estj"],
+    "level4": ["esfp", "estp"]
+  },
+  {
+    "id": 14,
+    "type": "esfj",
+    "level0": ["infp", "enfp", "infj", "enfj"],
+    "level1": ["intj", "intp", "entp"],
+    "level2": ["entj", "estp", "esfp"],
+    "level3": ["isfj", "esfj", "istj", "estj"],
+    "level4": ["isfp", "istp"]
+  },
+  {
+    "id": 15,
+    "type": "istj",
+    "level0": ["infp", "enfp", "infj", "enfj"],
+    "level1": ["intj", "intp", "entp"],
+    "level2": ["entj", "isfp", "istp"],
+    "level3": ["isfj", "esfj", "istj", "estj"],
+    "level4": ["esfp", "estp"]
+  },
+  {
+    "id": 16,
+    "type": "estj",
+    "level0": ["infp", "enfp", "infj", "enfj"],
+    "level1": ["intj", "entp"],
+    "level2": ["entj", "estp", "esfp"],
+    "level3": ["isfj", "esfj", "istj", "estj"],
+    "level4": ["intp", "isfp", "istp"]
+  }
+]
