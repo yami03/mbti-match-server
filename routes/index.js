@@ -96,4 +96,42 @@ router.get('/api/auth/user', async (req, res, next) => {
   res.status(200).send({ isAuthenticated: false });
 });
 
+router.get('/api/users', async (req, res, next) => {
+  try {
+    // limit 있는지 체크 있으면 숫자인지 체크
+    if (req.query.limit && isNaN(Number(req.query.limit))) {
+      res.status(400).send({
+        message: 'Invalid limit parameter'
+      });
+
+      return;
+    }
+
+    const limit = req.query.limit ? Number(req.query.limit) : 10;
+
+    if (req.query.pageIndex && isNaN(Number(req.query.pageIndex))) {
+      res.status(400).send({
+        message: 'Invalid pageIndex parameter'
+      });
+
+      return;
+    }
+
+    const pageIndex = req.query.pageIndex ? Number(req.query.pageIndex) : 0;
+    const users = await User.find();
+
+    const totalUserCount = users.length;
+
+    console.log(req.query.page);
+    console.log(req.query.limit);
+
+    return res.status(200).send({
+      total_user_count: totalUserCount,
+      user: users.slice(limit * pageIndex, limit * (pageIndex + 1))
+    });
+  } catch (error) {
+    res.status(500).send({ message: 'server error' });
+  }
+});
+
 module.exports = router;
