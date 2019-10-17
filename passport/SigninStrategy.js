@@ -9,7 +9,7 @@ const signinStrategy = new LocalStrategy(
   },
   async (email, password, done) => {
     try {
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ email }).select('+password');
 
       if (user) {
         bcrypt.compare(password, user.password, (err, res) => {
