@@ -78,7 +78,7 @@ router.post('/api/login', (req, res, next) => {
       }
 
       const copyUser = JSON.parse(JSON.stringify(user._doc));
-      const { password, __v, _id, created_at, updatedAt, ...newUser } = copyUser;
+      const { password, __v, created_at, updatedAt, ...newUser } = copyUser;
 
       return res.status(200).send({ user: newUser, isAuthenticated: true, message: '' });
     });
@@ -87,7 +87,7 @@ router.post('/api/login', (req, res, next) => {
 
 router.get('/api/auth/user', async (req, res, next) => {
   if (req.isAuthenticated()) {
-    const { password, __v, _id, created_at, updatedAt, ...newUser } = JSON.parse(
+    const { password, __v, created_at, updatedAt, ...newUser } = JSON.parse(
       JSON.stringify(req.user._doc)
     );
 
@@ -98,7 +98,6 @@ router.get('/api/auth/user', async (req, res, next) => {
 
 router.get('/api/users', async (req, res, next) => {
   try {
-    // limit 있는지 체크 있으면 숫자인지 체크
     if (req.query.limit && isNaN(Number(req.query.limit))) {
       res.status(400).send({
         message: 'Invalid limit parameter'
@@ -118,19 +117,58 @@ router.get('/api/users', async (req, res, next) => {
     }
 
     const pageIndex = req.query.pageIndex ? Number(req.query.pageIndex) : 0;
-    const users = await User.find();
+    const users = await User.find({ _id: { $ne: req.user._id } }).select(
+      '-__v -email -created_at -updatedAt -mail_confirm -chats'
+    );
 
     const totalUserCount = users.length;
 
-    console.log(req.query.page);
-    console.log(req.query.limit);
-
     return res.status(200).send({
       total_user_count: totalUserCount,
-      user: users.slice(limit * pageIndex, limit * (pageIndex + 1))
+      users: users.slice(limit * pageIndex, limit * (pageIndex + 1))
     });
   } catch (error) {
     res.status(500).send({ message: 'server error' });
+  }
+});
+
+router.get('/api/user/likes', async (req, res, next) => {
+  return res.status(200).send({ likes_me: req.user.like_me });
+});
+
+router.put('/api/users/likes/:partner_id', async (req, res, next) => {
+  try {
+    const partnerId = req.params.partner_id;
+    const useId = req.user._id;
+
+    await User.findOneAndUpdate(
+      { _id: partnerId },
+      {
+        $push: { like_me: useId }
+      }
+    );
+
+    return res.status(200).send({ result: 'ok', message: '' });
+  } catch (error) {
+    return res.status(500).send({ result: 'failure', message: 'server error' });
+  }
+});
+
+router.put('/api/users/unlikes/:partner_id', async (req, res, next) => {
+  const partnerId = req.params.partner_id;
+  const useId = req.user._id;
+
+  try {
+    await User.findOneAndUpdate(
+      { _id: useId },
+      {
+        $push: { dislike_users: partnerId }
+      }
+    );
+
+    return res.status(200).send({ result: 'ok' });
+  } catch (error) {
+    return res.status(500).send({ result: 'failure', message: 'server error' });
   }
 });
 
