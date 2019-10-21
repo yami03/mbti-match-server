@@ -6,6 +6,7 @@ const AWS = require('aws-sdk');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 const User = require('../models/User');
+const Chat = require('../models/Chat');
 require('dotenv').config();
 
 AWS.config.update({
@@ -117,9 +118,18 @@ router.get('/api/users', async (req, res, next) => {
     }
 
     const pageIndex = req.query.pageIndex ? Number(req.query.pageIndex) : 0;
-    const users = await User.find({ _id: { $ne: req.user._id } }).select(
-      '-__v -email -created_at -updatedAt -mail_confirm -chats'
-    );
+    const chatUserIds = await Chat.find({ _id: { $in: req.user.chats } }).select('users');
+    const chatPartners = chatUserIds.map(el => {
+      const [user1, user2] = el.users;
+      return req.user.id === user1 ? user2 : user1;
+    });
+    console.log(chatPartners);
+    const users = await User.find({
+      $and: [
+        { _id: { $nin: [req.user._id, ...chatPartners] } },
+        { dislike_users: { $nin: req.user.dislike_users } }
+      ]
+    }).select('-__v -email -created_at -updatedAt -mail_confirm -chats');
 
     const totalUserCount = users.length;
 
@@ -128,7 +138,7 @@ router.get('/api/users', async (req, res, next) => {
       users: users.slice(limit * pageIndex, limit * (pageIndex + 1))
     });
   } catch (error) {
-    res.status(500).send({ message: 'server error' });
+    res.status(500).send({ message: error });
   }
 });
 
@@ -139,12 +149,12 @@ router.get('/api/user/likes', async (req, res, next) => {
 router.put('/api/users/likes/:partner_id', async (req, res, next) => {
   try {
     const partnerId = req.params.partner_id;
-    const useId = req.user._id;
+    const userId = req.user._id;
 
     await User.findOneAndUpdate(
       { _id: partnerId },
       {
-        $push: { like_me: useId }
+        $push: { like_me: userId }
       }
     );
 
@@ -156,11 +166,11 @@ router.put('/api/users/likes/:partner_id', async (req, res, next) => {
 
 router.put('/api/users/unlikes/:partner_id', async (req, res, next) => {
   const partnerId = req.params.partner_id;
-  const useId = req.user._id;
+  const userId = req.user._id;
 
   try {
     await User.findOneAndUpdate(
-      { _id: useId },
+      { _id: userId },
       {
         $push: { dislike_users: partnerId }
       }
@@ -170,6 +180,74 @@ router.put('/api/users/unlikes/:partner_id', async (req, res, next) => {
   } catch (error) {
     return res.status(500).send({ result: 'failure', message: 'server error' });
   }
+});
+
+router.get('/api/chats', async (req, res, next) => {
+  const userId = req.user.id;
+  const chats = await Chat.find({ _id: { $in: req.user.chats } }).populate({
+    path: 'users',
+    select: 'name _id profile_image'
+  });
+
+  const newChats = chats.map(obj => {
+    obj._doc.partner = obj.users[0].id !== userId ? obj.users[0] : obj.users[1];
+    delete obj._doc.users;
+
+    return obj._doc;
+  });
+
+  return res.status(200).send({ chats: newChats });
+});
+
+router.post('/api/chats/:partner_id', async (req, res, next) => {
+  const partnerId = req.params.partner_id;
+  const userId = req.user._id;
+
+  const newChats = await new Chat({
+    users: [partnerId, userId]
+  }).save();
+
+  await User.updateMany(
+    { _id: { $in: [partnerId, userId] } },
+    { $push: { chats: newChats._id } },
+    { multi: true }
+  );
+
+  return res.status(200).send({ chat: newChats });
+});
+
+router.get('/api/chats/:roomId', async (req, res) => {
+  const roomId = req.params.roomId;
+  const chat = await Chat.findOne({ _id: roomId }).populate({
+    path: 'users',
+    select: 'name _id profile_image'
+  });
+
+  const userId = req.user.id;
+
+  chat._doc.partner = chat.users[0].id !== userId ? chat.users[0] : chat.users[1];
+  delete chat._doc.users;
+
+  return res.status(200).send({ chat });
+});
+
+router.put('/api/chats/:roomId', async (req, res) => {
+  const roomId = req.params.roomId;
+  const userId = req.user._id;
+
+  const chat = await Chat.findOneAndUpdate(
+    { _id: roomId },
+    {
+      $push: {
+        messages: {
+          content: req.body.message,
+          speaker: userId
+        }
+      }
+    }
+  );
+
+  return res.status(200).send({ chat: chat });
 });
 
 module.exports = router;
