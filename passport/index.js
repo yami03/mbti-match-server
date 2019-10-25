@@ -13,9 +13,9 @@ passport.deserializeUser(async (email, done) => {
     if (!user) {
       return done(new Error('가입되지 않은 회원입니다.'));
     }
-    done(null, user);
+    return done(null, user);
   } catch (err) {
-    done(err);
+    return done(err);
   }
 });
 
