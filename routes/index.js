@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { check, validationResult } = require('express-validator');
 const passport = require('../passport');
 const authController = require('./controllers/authController');
 const AWS = require('aws-sdk');
@@ -7,6 +8,7 @@ const multer = require('multer');
 const multerS3 = require('multer-s3');
 const User = require('../models/User');
 const Chat = require('../models/Chat');
+const mbtiRelationDiagram = require('../lib/mbti.json');
 require('dotenv').config();
 
 AWS.config.update({
@@ -29,7 +31,7 @@ const upload = multer({
   })
 });
 
-router.post('/api/upload', upload.single('file'), async (req, res, next) => {
+router.put('/api/upload', upload.single('file'), async (req, res, next) => {
   await User.findOneAndUpdate({ _id: req.user._id }, { profile_image: req.file.location });
   req.user.profile_image = req.file.location;
 
@@ -42,14 +44,14 @@ router.post('/api/upload', upload.single('file'), async (req, res, next) => {
 router.post('/api/signup', (req, res, next) => {
   passport.authenticate('local-signup', function(error, user, info) {
     if (error) {
-      return res.status(500).json({
+      return res.status(500).send({
         message: error
       });
     }
 
     req.logIn(user, error => {
       if (error) {
-        return res.status(500).json({
+        return res.status(500).send({
           message: error
         });
       }
@@ -64,21 +66,31 @@ router.post('/api/signup', (req, res, next) => {
 
 router.post('/api/login', (req, res, next) => {
   req.session = null;
-  passport.authenticate('local-signin', function(error, user, info) {
+  passport.authenticate('local-signin', (error, user, info) => {
     if (error) {
-      return res.status(500).send({
+      return res.status(400).send({
         message: error
       });
     }
 
-    req.logIn(user, error => {
+    req.logIn(user, async error => {
       if (error) {
-        return res.status(500).send({
+        return res.status(400).send({
           message: error
         });
       }
 
+      if (req.body.location.latitude && req.body.location.longitude) {
+        const user = await User.findByIdAndUpdate(
+          { _id: req.user._id },
+          { location: req.body.location }
+        ).select('-__v -created_at -');
+
+        return res.status(200).send({ user, isAuthenticated: true, message: '' });
+      }
+
       const copyUser = JSON.parse(JSON.stringify(user._doc));
+      copyUser.location = req.body.location;
       const { password, __v, created_at, updatedAt, ...newUser } = copyUser;
 
       return res.status(200).send({ user: newUser, isAuthenticated: true, message: '' });
@@ -95,6 +107,11 @@ router.get('/api/auth/user', async (req, res, next) => {
     return res.status(200).send({ user: newUser, isAuthenticated: true });
   }
   res.status(200).send({ isAuthenticated: false });
+});
+
+router.get('/api/logout', async (req, res, next) => {
+  req.logout();
+  res.status(200).send({ result: 'success' });
 });
 
 router.get('/api/users', async (req, res, next) => {
@@ -118,16 +135,21 @@ router.get('/api/users', async (req, res, next) => {
     }
 
     const pageIndex = req.query.pageIndex ? Number(req.query.pageIndex) : 0;
-    const chatUserIds = await Chat.find({ _id: { $in: req.user.chats } }).select('users');
+    const chatUserIds = await Chat.find({ _id: { $in: req.user.chats } })
+      .select('users')
+      .populate({
+        path: 'users',
+        select: '_id'
+      });
     const chatPartners = chatUserIds.map(el => {
       const [user1, user2] = el.users;
-      return req.user.id === user1 ? user2 : user1;
+      return req.user.id === user1.id ? user2._id : user1._id;
     });
-    console.log(chatPartners);
+
     const users = await User.find({
       $and: [
-        { _id: { $nin: [req.user._id, ...chatPartners] } },
-        { dislike_users: { $nin: req.user.dislike_users } }
+        { _id: { $nin: [req.user._id, ...chatPartners, ...req.user.dislike_users] } },
+        { like_me: { $nin: req.user._id } }
       ]
     }).select('-__v -email -created_at -updatedAt -mail_confirm -chats');
 
@@ -151,7 +173,7 @@ router.put('/api/users/likes/:partner_id', async (req, res, next) => {
     const partnerId = req.params.partner_id;
     const userId = req.user._id;
 
-    await User.findOneAndUpdate(
+    await User.findByIdAndUpdate(
       { _id: partnerId },
       {
         $push: { like_me: userId }
@@ -248,6 +270,26 @@ router.put('/api/chats/:roomId', async (req, res) => {
   );
 
   return res.status(200).send({ chat: chat });
+});
+
+router.put('/api/user', async (req, res) => {
+  const mbtiData = mbtiRelationDiagram.find(obj => obj.type === req.body.mbti);
+  await User.findByIdAndUpdate(
+    {
+      _id: req.user._id
+    },
+    {
+      name: req.body.name,
+      mbti: mbtiData,
+      description: req.body.description
+    }
+  );
+
+  const user = await User.findById({
+    _id: req.user._id
+  }).select('-__v -created_at');
+
+  return res.status(200).send({ user });
 });
 
 module.exports = router;
