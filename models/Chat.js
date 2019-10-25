@@ -12,19 +12,17 @@ const chatSchema = new Schema({
   messages: [
     {
       content: {
-        type: String,
-        required: true
+        type: String
       },
       speaker: {
         type: mongoose.Schema.ObjectId,
-        ref: 'User',
-        required: true
+        ref: 'User'
       },
       createAt: {
         type: Date,
-        default: Date.now,
-        required: true
-      }
+        default: Date.now
+      },
+      isRead: false
     }
   ]
 });

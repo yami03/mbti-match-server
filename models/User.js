@@ -48,16 +48,16 @@ const userSchema = new Schema(
       type: String,
       required: true
     },
-    location: [
-      {
-        latitude: {
-          type: Number
-        },
-        longitude: {
-          type: Number
-        }
+    location: {
+      latitude: {
+        type: Number,
+        default: 0
+      },
+      longitude: {
+        type: Number,
+        default: 0
       }
-    ],
+    },
     profile_image: {
       type: String
     },
@@ -90,7 +90,7 @@ const userSchema = new Schema(
     chats: [
       {
         type: mongoose.Schema.ObjectId,
-        ref: 'User'
+        ref: 'Chat'
       }
     ]
   },
