@@ -1,4 +1,4 @@
-const { CONNECTION, MESSAGE, JOIN } = require('../contants/socketEventTypes');
+const { CONNECTION, MESSAGE, JOIN, LEAVE } = require('../contants/socketEventTypes');
 
 module.exports = io => {
   io.on(CONNECTION, socket => {
@@ -8,11 +8,10 @@ module.exports = io => {
     });
 
     socket.on(MESSAGE, ({ roomId, userId, message }) => {
-      console.log(roomId);
       io.to(roomId).emit(MESSAGE, { userId, message });
     });
 
-    socket.on(MESSAGE, roomId => {
+    socket.on(LEAVE, roomId => {
       socket.leave(roomId);
     });
   });
