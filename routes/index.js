@@ -30,6 +30,10 @@ const upload = multer({
   })
 });
 
+router.get('/', (req, res, next) => {
+  res.json({ message: 'hello' });
+});
+
 router.put('/api/upload', upload.single('file'), async (req, res, next) => {
   await User.findOneAndUpdate({ _id: req.user._id }, { profile_image: req.file.location });
   req.user.profile_image = req.file.location;

@@ -5,3 +5,8 @@ package-lock.json
 *.log
 .env
 .prettierrc
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
