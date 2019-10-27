@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const { check, validationResult } = require('express-validator');
 const passport = require('../passport');
 const authController = require('./controllers/authController');
 const AWS = require('aws-sdk');
@@ -157,7 +156,8 @@ router.get('/api/users', async (req, res, next) => {
 
     return res.status(200).send({
       total_user_count: totalUserCount,
-      users: users.slice(limit * pageIndex, limit * (pageIndex + 1))
+      users
+      // users: users.slice(limit * pageIndex, limit * (pageIndex + 1))
     });
   } catch (error) {
     res.status(500).send({ message: error });
