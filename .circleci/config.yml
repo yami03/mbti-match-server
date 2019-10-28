@@ -34,7 +34,7 @@ jobs:
           name: Deploy to env
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-                eb deploy server
+                eb deploy Server-env
             else
                 eb deploy server-development
             fi
