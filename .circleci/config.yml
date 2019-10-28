@@ -12,8 +12,7 @@ jobs:
       - run:
           name: Install NPM Dependencies
           command: |
-            sudo npm config set unsafe-perm true
-            sudo npm install --unsafe-perm
+            sudo npm install
       - run:
           name: Run test
           command: |
