@@ -1,5 +1,3 @@
-const { check, validationResult } = require('express-validator');
-
 exports.isLoggedIn = (req, res, next) => {
   if (req.isAuthenticated()) return next();
 
