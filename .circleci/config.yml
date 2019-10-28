@@ -3,7 +3,7 @@ jobs:
   build:
     docker:
       - image: circleci/python:3.7.0-stretch-node-browsers
-    working_directory: ~/server
+    working_directory: ~/sample
     steps:
       - checkout
       - run:
@@ -34,7 +34,7 @@ jobs:
           name: Deploy to env
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-                eb deploy Server-env
+                eb deploy Mbti-env
             else
                 eb deploy server-development
             fi
