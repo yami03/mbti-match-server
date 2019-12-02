@@ -22,16 +22,7 @@ mongoose.connect(process.env.DATABASE_URI, {
   useCreateIndex: true
 });
 
-app.use(
-  cors({
-    allowedHeaders: ['session', 'Content-Type'],
-    exposedHeaders: ['session'],
-    origin: 'http://localhost:3000',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    preflightContinue: false,
-    credentials: true
-  })
-);
+app.use(cors());
 
 app.use(
   cookieSession({
