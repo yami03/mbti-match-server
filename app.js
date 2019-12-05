@@ -24,7 +24,8 @@ mongoose.connect(process.env.DATABASE_URI, {
 
 app.use(
   cors({
-    origin: 'https://mbti-match.slaspace.com'
+    origin: 'https://mbti-match.slaspace.com',
+    credentials: true
   })
 );
 
