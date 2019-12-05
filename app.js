@@ -22,7 +22,11 @@ mongoose.connect(process.env.DATABASE_URI, {
   useCreateIndex: true
 });
 
-app.use(cors());
+app.use(
+  cors({
+    origin: 'https://mbti-match.slaspace.com'
+  })
+);
 
 app.use(
   cookieSession({
