@@ -10,9 +10,13 @@ const passport = require('./passport');
 const indexRouter = require('./routes/index');
 
 const app = express();
+let ORIGIN_ROOT;
 
 if (process.env.NODE_ENV === 'development') {
   require('dotenv').config();
+  ORIGIN_ROOT = 'http://localhost:3000';
+} else {
+  ORIGIN_ROOT = 'https://api.slaspace.com';
 }
 
 mongoose.connect(process.env.DATABASE_URI, {
@@ -24,7 +28,7 @@ mongoose.connect(process.env.DATABASE_URI, {
 
 app.use(
   cors({
-    origin: 'https://mbti-match.slaspace.com',
+    origin: ORIGIN_ROOT,
     credentials: true
   })
 );
