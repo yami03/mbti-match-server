@@ -16,7 +16,7 @@ if (process.env.NODE_ENV === 'development') {
   require('dotenv').config();
   ORIGIN_ROOT = 'http://localhost:3000';
 } else {
-  ORIGIN_ROOT = 'https://api.slaspace.com';
+  ORIGIN_ROOT = 'https://mbti-match.slaspace.com';
 }
 
 mongoose.connect(process.env.DATABASE_URI, {
