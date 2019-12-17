@@ -3,7 +3,7 @@
 [![youtube](README.assets/youtube.png)](https://youtu.be/ApJpejiBE9I)
 
 소개팅 모바일 웹 어플리케이션입니다. 
-매칭이 되었을 시 사용자와 상대방의 [mbti]([https://en.wikipedia.org/wiki/Myers%E2%80%93Briggs_Type_Indicator](https://en.wikipedia.org/wiki/Myers–Briggs_Type_Indicator)) 적합성을 결과로 알려주고 socket.io를 이용하여 채팅 하실 수 있습니다.
+유저 리스트에서 사용자가 상대방을 좋아요 눌렀을 경우 [mbti]([https://en.wikipedia.org/wiki/Myers%E2%80%93Briggs_Type_Indicator](https://en.wikipedia.org/wiki/Myers–Briggs_Type_Indicator)) 적합성을 결과로 알려주고 socket.io를 이용하여 채팅 하실 수 있습니다.
 
 ## Installation
 
